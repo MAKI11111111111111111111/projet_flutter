@@ -1,0 +1,113 @@
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(
+    url: 'https://lqkfkjvorlxsupqbcxvz.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxxa2ZranZvcmx4c3VwcWJjeHZ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1NzQ5NzksImV4cCI6MjA1NjE1MDk3OX0.KfLJxVizTbQThTHr3rmsxNinIg9H0gKiEiXzoDMAUAI',
+  );
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Supabase Auth',
+      home: LoginScreen(),
+    );
+  }
+}
+
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final SupabaseClient supabase = Supabase.instance.client;
+
+  Future<void> _signInWithGithub() async {
+    try {
+      await supabase.auth.signInWithOAuth(OAuthProvider.github);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Connexion GitHub réussie !')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur: ${e.toString()}')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.black, Colors.blueGrey.shade900],
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/imagedraw.jpg', // Assure-toi que ton image est bien dans le dossier assets
+                height: 500, // Augmentation de la taille du logo
+              ),
+              SizedBox(height: 20),
+              Text(
+                'AI Art Generator',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 50, // Légèrement plus grand
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                child: Text(
+                  'Create AI art using only your words in just a few seconds! Enter a prompt, choose a style, and watch AI bring your ideas to life!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _signInWithGithub,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent,
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+                child: Text(
+                  'Try for Free',
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
